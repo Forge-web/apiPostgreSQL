@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from dotenv import load_dotenv
 
-from app.core.database import Base
-from app.models import Users
+from ..models.Base import Base
+from models import *
 
 load_dotenv()
 
@@ -67,7 +67,9 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-	context.configure(connection=connection, target_metadata=target_metadata)
+	context.configure(
+		connection=connection, target_metadata=target_metadata
+	)
 
 	with context.begin_transaction():
 		context.run_migrations()

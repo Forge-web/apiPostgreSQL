@@ -1,29 +1,29 @@
 import bcrypt
-import uuid
-from datetime import datetime
-from typing import Optional
-from sqlalchemy import String, ForeignKey, text, UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from Base import Base
+from sqlalchemy import String
 from sqlalchemy.ext.hybrid import hybrid_property
-from ..core.database import Base
+from sqlalchemy.orm import Mapped, mapped_column
+
+from models.mixins.timeStampedMixin import TimeStampedMixin
+from models.mixins.uuidMixin import IdMixin
 
 
-class User(Base):
+class User(IdMixin, TimeStampedMixin, Base):
 	__tablename__ = "users"
 
-	id: Mapped[uuid.UUID] = mapped_column(
-		UUID(as_uuid=True), primary_key=True, server_default=("gen_random_uuid()")
+	username: Mapped[str] = mapped_column(
+		String(50), unique=True, nullable=False
 	)
 
-	username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-
-	email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+	email: Mapped[str] = mapped_column(
+		String(120), unique=True, nullable=False
+	)
 
 	_password_hash: Mapped[str] = mapped_column()
 
-	created_at: Mapped[datetime] = mapped_column(
-		server_default=text("TIMEZONE('utc', NOW())")
-	)
+	# created_at: Mapped[datetime] = mapped_column(
+	# 	server_default=text("TIMEZONE('utc', NOW())")
+	# )
 
 	@hybrid_property
 	def password(self) -> str:
